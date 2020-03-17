@@ -39,7 +39,7 @@ def send(ToQQ,Content,sendToType,atuser=0,sendMsgType='TextMsg',groupid=0):
 def zan(QQ)
     #QQ名片赞
     tmp={}
-    tmp={'UserID'}=QQ
+    tmp['UserID']=QQ
     tmp1 = json.dumps(tmp)
     requests.post(webapi+'/v1/LuaApiCaller?funcname=QQZan&timeout=10&qq='+robotqq,data=tmp1)
 def sendPic(ToQQ,Content,sendToType,imageUrl):
