@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"iotqq/model"
 	"log"
 	"net/http"
 	"net/url"
@@ -16,10 +17,9 @@ import (
 
 	"github.com/graarh/golang-socketio"
 	"github.com/graarh/golang-socketio/transport"
-	"github.com/mcoo/iotqq/model"
 )
 
-var url1, qq string
+var BotUrl, qq string
 var conf iotqq.Conf
 var zanok, qd []int64
 
@@ -94,10 +94,9 @@ func main() {
 	fmt.Scan(&port)
 	fmt.Println("\n请输入QQ机器人账号: ")
 	fmt.Scan(&qq)
-	iotqq.Set(url1, qq)
+	iotqq.Set(BotUrl, qq)
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	url1 = site + ":" + strconv.Itoa(port)
-
+	BotUrl = site + ":" + strconv.Itoa(port)
 	c, err := gosocketio.Dial(
 		gosocketio.GetUrl(site, port, false),
 		transport.GetDefaultWebsocketTransport())
@@ -105,7 +104,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = c.On("OnGroupiotqqs", func(h *gosocketio.Channel, args iotqq.Message) {
+	err = c.On("OnGroupMsgs", func(h *gosocketio.Channel, args iotqq.Message) {
 		var mess iotqq.Data = args.CurrentPacket.Data
 		/*
 			mess.Content 消息内容 string
@@ -229,7 +228,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.On("OnFriendiotqqs", func(h *gosocketio.Channel, args iotqq.Message) {
+	err = c.On("OnFriendMsgs", func(h *gosocketio.Channel, args iotqq.Message) {
 		log.Println("私聊消息: ", args.CurrentPacket.Data.Content)
 	})
 	if err != nil {
